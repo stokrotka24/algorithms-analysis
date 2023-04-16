@@ -1,13 +1,28 @@
 import math
+import shelve
 from collections import defaultdict
 
 from helpers import generate_multiset, calc_ratio
+from hyperloglog import HyperLogLog
 from min_count import MinCount
 from min_count_non_uniform_hash import MinCountNonUniformHash
 from min_count_trunc_hash import MinCountTruncHash
 
 n_range = range(1, 10001)
 hash_functions = ['md5', 'sha256', 'sha512', 'sha3_256', 'sha3_512']
+b_values = range(4, 17)
+# m_values = [16, 32, 64, 128, 256]
+# hash_names = ["mmh"]
+hash_names = ["city", "farm"]
+
+
+def save_multisets():
+    multisets = dict()
+    for n in n_range:
+        print(n)
+        multisets[n] = generate_multiset(n)
+    with shelve.open("multisets") as db:
+        db['multisets'] = multisets
 
 
 def task5a():
@@ -121,8 +136,49 @@ def task6():
                 f.write(f"{results_non_uniform_hash[hash_func][n]}\n")
 
 
+def task8():
+    with shelve.open("multisets", "r") as db:
+        multisets = db["multisets"]
+
+    # for hash_name in hash_names:
+    #     print(f"\n{hash_name}")
+    #     for b in b_values:
+    #         print(f"\n\tb={b}", end=" ")
+    #         results = []
+    #         for n in n_range:
+    #             if n % 100 == 0:
+    #                 print(f"{n}", end=" ")
+    #             s_n = multisets[n]
+    #             hyperloglog = HyperLogLog(hash_name=hash_name, b=b, multiset=s_n)
+    #             results.append(hyperloglog.run() / n)
+    #
+    #         with open(f"results/task8_{hash_name}_{b}.txt", "w") as f:
+    #             for result in results:
+    #                 f.write(f"{result}\n")
+
+    k_values = []
+    for b in b_values:
+        k_values.append(round(5/32 * 2**b))
+    print(k_values)
+    results = defaultdict(dict)
+    for k in k_values:
+        print(f"\n{k}")
+        for n in n_range:
+            if n % 100 == 0:
+                print(f"\t{n}", end=" ")
+            s_n = multisets[n]
+            m = MinCount(hash_func='md5', k=k, multiset=s_n)
+            results[k][n] = m.run() / n
+
+        with open(f"results/task8_min_count_k{k}.txt", "w") as f:
+            for n in n_range:
+                f.write(f"{results[k][n]}\n")
+
+
 if __name__ == "__main__":
-    task5a()
-    task5b()
-    task5c()
-    task6()
+    # save_multisets()
+    # task5a()
+    # task5b()
+    # task5c()
+    # task6()
+    task8()

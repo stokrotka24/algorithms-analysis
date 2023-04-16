@@ -17,7 +17,7 @@ class MinCount:
         divisor = 2 ** (h.digest_size * 8)
         return Decimal(int_val) / Decimal(divisor)
 
-    def run(self) -> int:
+    def run(self) -> float:
         for elem in self.multiset:
             hash_val = self.get_hash(elem)
 
