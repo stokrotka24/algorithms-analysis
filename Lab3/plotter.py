@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-from simulation import double_spending_attack, pbb_adv_win
+from simulation import pbb_adv_win
 from theoretical_analysis import pbb_adv_win_nakamoto, pbb_adv_win_grunspan, find_n
 
 def save_plot(data: dict, title: str, xlabel: str, ylabel: str, filename: str, scatter: bool = True) -> None:
@@ -26,7 +26,7 @@ def plot_pbb():
     q_values = [*np.arange(0.0, 0.5, 0.01)]
 
     for n in n_values:
-        print(n)
+        print(f"n={n}")
         nakamoto = list(map(lambda q: pbb_adv_win_nakamoto(n=n, q=q), q_values))
         grunspan = list(map(lambda q: pbb_adv_win_grunspan(n=n, q=q), q_values))
         data = {'x': q_values, 'plots':[{'y': nakamoto, 'label': "Nakamoto"},
