@@ -1,1 +1,4 @@
-/Lab2/results/
+/ApproximateCounting/results/
+/LeaderElection/.idea/
+/LeaderElection/out/
+*.iml
