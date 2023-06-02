@@ -1,0 +1,5 @@
+n = 3 max = 2
+n = 4 max = 13
+n = 5 max = 24
+n = 6 max = 38
+n = 7 max = 55
